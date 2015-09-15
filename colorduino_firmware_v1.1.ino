@@ -52,21 +52,21 @@ void loop()
   if (Wire.available()>66) { //when buffer full, process data. 66 =  start byte + colour + 64 pixel data + end byte
     
     // error check - make sure our data starts with the right byte   
-    if (Wire.receive() != START_OF_DATA) {
+    if (Wire.read() != START_OF_DATA) {
       //else handle error by reading remaining data until end of data marker (if available)
-      while (Wire.available()>0 && Wire.receive()!=END_OF_DATA) {}      
+      while (Wire.available()>0 && Wire.read()!=END_OF_DATA) {}      
       return;
     }
 
-    byte c = Wire.receive(); //read our color byte so we know if these are the R, G or B pixels.
+    byte c = Wire.read(); //read our color byte so we know if these are the R, G or B pixels.
     
     //depeding on c read pixels in as R G or B
     //read red display data
     if (c == 0){
       for (byte x = 0; x < 8; x++){
         for (byte y = 0; y < 8; y++){
-           PixelRGB *p = &(*Colorduino.curWriteFrame)[x][y];
-           p->r = Wire.receive();
+           PixelRGB *p = Colorduino.GetPixel(x,y);
+           p->r = Wire.read();
         }
       }
     }
@@ -75,8 +75,8 @@ void loop()
     if (c == 1){
       for (byte x = 0; x < 8; x++){
         for (byte y = 0; y < 8; y++){
-          PixelRGB *p = &(*Colorduino.curWriteFrame)[x][y];
-           p->g = Wire.receive(); 
+          PixelRGB *p = Colorduino.GetPixel(x,y);
+           p->g = Wire.read(); 
         }
       }
     }
@@ -85,14 +85,14 @@ void loop()
     if (c == 2){
       for (byte x = 0; x < 8; x++){
         for (byte y = 0; y < 8; y++){
-           PixelRGB *p = &(*Colorduino.curWriteFrame)[x][y];
-           p->b = Wire.receive(); 
+           PixelRGB *p = Colorduino.GetPixel(x,y);
+           p->b = Wire.read(); 
         }
       }
     }
     
     //read end of data marker
-    if (Wire.receive()==END_OF_DATA) {
+    if (Wire.read()==END_OF_DATA) {
       //if colour is blue, then update display
       if (c == 2){Colorduino.FlipPage();}
     } 
@@ -108,10 +108,3 @@ void loop()
 void receiveEvent(int numBytes) {
   //do nothing here
 }
-
-
-
-
-
-
-

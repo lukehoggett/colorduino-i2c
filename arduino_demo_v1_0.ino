@@ -90,10 +90,10 @@ void update_display(byte addr) {
 //send data via I2C to a client
 static byte BlinkM_sendBuffer(byte addr, byte col, byte* disp_data) {
   Wire.beginTransmission(addr);
-  Wire.send(START_OF_DATA);
-  Wire.send(col);
-  Wire.send(disp_data, 64);
-  Wire.send(END_OF_DATA);
+  Wire.write(START_OF_DATA);
+  Wire.write(col);
+  Wire.write(disp_data, 64);
+  Wire.write(END_OF_DATA);
   return Wire.endTransmission();
 }
 
@@ -205,5 +205,3 @@ void plasma_setup()
       plasma[x][y] = bcolor;
     }
 }
-
-
